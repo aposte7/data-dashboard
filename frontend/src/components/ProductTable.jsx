@@ -1,121 +1,145 @@
-import React, { useState } from "react";
-import { MoreVertical } from "lucide-react";
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "./ui/table";
+import React from "react";
+import Button from "./ui/button";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "./ui/dropdown-menu";
+import { MoreVertical, ExternalLink, Eye, Copy } from "lucide-react";
 
-function ProductTable({ products = [], onView, onEdit, onDelete }) {
-  const [openId, setOpenId] = useState(null);
+export default function ProductTable({ products }) {
+  if (!products.length) {
+    return <div className="text-gray-500">No products match your filters.</div>;
+  }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Image</TableHead>
-          <TableHead>ID</TableHead>
-          <TableHead>Title</TableHead>
-          <TableHead>Brand</TableHead>
-          <TableHead>Category</TableHead>
-          <TableHead className="text-right">Price</TableHead>
-          <TableHead className="text-right">Rating</TableHead>
-          <TableHead className="w-1">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {products.length === 0 ? (
-          <TableRow>
-            <TableCell
-              colSpan={8}
-              className="py-8 text-center text-sm text-gray-500"
-            >
-              No products yet.
-            </TableCell>
-          </TableRow>
-        ) : (
-          products.map((p) => (
-            <TableRow key={p.id}>
-              <TableCell>
-                <div className="h-10 w-10 overflow-hidden rounded bg-gray-100">
+    <div className="overflow-x-auto rounded-lg border border-gray-200">
+      <table className="min-w-full text-sm">
+        <thead className="bg-gray-50">
+          <tr className="text-left text-gray-600">
+            <th className="px-3 py-3 text-xs font-semibold tracking-wide uppercase">
+              Image
+            </th>
+            <th className="px-3 py-3 text-xs font-semibold tracking-wide uppercase">
+              Name
+            </th>
+            <th className="px-3 py-3 text-xs font-semibold tracking-wide uppercase">
+              Category
+            </th>
+            <th className="px-3 py-3 text-xs font-semibold tracking-wide uppercase">
+              Price
+            </th>
+            <th className="px-3 py-3 text-xs font-semibold tracking-wide uppercase">
+              Rating
+            </th>
+            <th className="px-3 py-3 text-xs font-semibold tracking-wide uppercase">
+              Reviews
+            </th>
+            <th className="px-3 py-3 text-xs font-semibold tracking-wide uppercase">
+              Availability
+            </th>
+            <th className="px-3 py-3 text-right text-xs font-semibold tracking-wide uppercase">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100 bg-white">
+          {products.map((p) => (
+            <tr key={p.id} className="hover:bg-gray-50">
+              <td className="px-3 py-3">
+                {p.imageUrl ? (
                   <img
-                    src={p.image || "https://via.placeholder.com/40"}
+                    src={p.imageUrl}
                     alt={p.title || "Product image"}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
+                    className="h-12 w-12 rounded border object-cover"
                   />
-                </div>
-              </TableCell>
-              <TableCell>{p.id}</TableCell>
-              <TableCell>{p.title}</TableCell>
-              <TableCell>{p.brand}</TableCell>
-              <TableCell>{p.category}</TableCell>
-              <TableCell className="text-right">
-                ${(p.priceNumber ?? 0).toFixed(2)}
-              </TableCell>
-              <TableCell className="text-right">
-                {(p.rating ?? 0).toFixed(1)}
-              </TableCell>
-              <TableCell className="text-right">
-                <DropdownMenu
-                  open={openId === p.id}
-                  onOpenChange={(o) => setOpenId(o ? p.id : null)}
+                ) : (
+                  <div className="grid h-12 w-12 place-items-center rounded bg-gray-100 text-gray-400">
+                    —
+                  </div>
+                )}
+              </td>
+              <td className="max-w-[360px] px-3 py-3">
+                <a
+                  href={p.productUrl || "#"}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium text-gray-900 hover:underline"
                 >
+                  {p.title || "Untitled"}
+                </a>
+                <div className="text-xs text-gray-500">ID: {p.id}</div>
+              </td>
+              <td className="px-3 py-3">{p.category || "—"}</td>
+              <td className="px-3 py-3">
+                {p.priceDisplay ??
+                  (p.priceNumber != null
+                    ? `$${p.priceNumber.toFixed(2)}`
+                    : "—")}
+              </td>
+              <td className="px-3 py-3">
+                {p.rating != null ? `${p.rating.toFixed(1)}★` : "—"}
+              </td>
+              <td className="px-3 py-3">{p.reviewsCount ?? "—"}</td>
+              <td className="px-3 py-3">
+                {p.availability ? (
+                  <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs font-medium text-gray-700 capitalize">
+                    {p.availability}
+                  </span>
+                ) : (
+                  "—"
+                )}
+              </td>
+              <td className="px-3 py-3 text-right">
+                <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      className="inline-flex h-8 w-8 items-center justify-center rounded hover:bg-gray-100"
+                    <Button
+                      variant="ghost"
+                      className="h-8 w-8 p-0 hover:bg-gray-100"
                       aria-label="Open actions"
                     >
-                      <MoreVertical className="h-5 w-5 text-gray-700" />
-                    </button>
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
-                      onClick={() => {
-                        onView?.(p);
-                        setOpenId(null);
+                      onSelect={() => {
+                        // Placeholder for a details view hook/route
+                        alert(`Product ${p.id}: ${p.title || "Untitled"}`);
                       }}
                     >
-                      View
+                      <Eye className="mr-2 h-4 w-4" /> View details
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => {
-                        onEdit?.(p);
-                        setOpenId(null);
+                      onSelect={() => {
+                        if (p.productUrl) {
+                          window.open(p.productUrl, "_blank", "noopener");
+                        }
                       }}
                     >
-                      Edit
+                      <ExternalLink className="mr-2 h-4 w-4" /> Open link
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      className="text-red-600 focus:bg-red-50"
-                      onClick={() => {
-                        onDelete?.(p);
-                        setOpenId(null);
+                      onSelect={async () => {
+                        try {
+                          await navigator.clipboard.writeText(String(p.id));
+                        } catch (e) {
+                          console.warn("Clipboard unsupported", e);
+                        }
                       }}
                     >
-                      Delete
+                      <Copy className="mr-2 h-4 w-4" /> Copy ID
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </TableCell>
-            </TableRow>
-          ))
-        )}
-      </TableBody>
-    </Table>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
-
-export default ProductTable;
