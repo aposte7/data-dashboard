@@ -21,9 +21,6 @@ function Sidebar() {
         <div className="py-5">
           <SidebarNav />
         </div>
-        <div className="mt-auto p-4 text-xs text-gray-500">
-          IndexedDB local storage
-        </div>
       </aside>
 
       <label

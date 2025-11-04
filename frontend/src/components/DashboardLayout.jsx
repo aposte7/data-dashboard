@@ -23,9 +23,6 @@ export default function DashboardLayout() {
         <main className="container-responsive space-y-6 py-6">
           <Outlet />
         </main>
-        <footer className="container-responsive py-8 text-sm text-gray-500">
-          <p>Local persistence via IndexedDB. Import on the Ingest page.</p>
-        </footer>
       </div>
     </div>
   );

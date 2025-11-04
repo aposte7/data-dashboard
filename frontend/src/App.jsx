@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Scrapper from "./pages/Scrapper";
-import DashboardLayout from "./features/DashboardLayout";
+import DashboardLayout from "./components/DashboardLayout";
 
 export default function App() {
   return (
